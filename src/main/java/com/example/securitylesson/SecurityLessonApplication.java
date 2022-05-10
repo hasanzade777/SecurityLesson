@@ -1,9 +1,11 @@
 package com.example.securitylesson;
 
+import com.example.securitylesson.config.jwt.JwtService;
 import com.example.securitylesson.model.Authority;
 import com.example.securitylesson.model.Role;
 import com.example.securitylesson.model.user;
 import com.example.securitylesson.repository.UserRepository;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +22,7 @@ import java.util.*;
 public class SecurityLessonApplication implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final JwtService jwtService;
     public static void main(String[] args) {
         SpringApplication.run(SecurityLessonApplication.class, args);
     }
@@ -39,5 +42,9 @@ public class SecurityLessonApplication implements CommandLineRunner {
                 .Authorities(List.of(authority))
                 .build();
         userRepository.save(use1r);
+        String token1=jwtService.issueToken(use1r, Duration.ofHours(1));
+        log.info("JWT for user is{}",token1);
+
+        log.info("Parse JWT {}",jwtService.parseToken(token1));
     }
 }
